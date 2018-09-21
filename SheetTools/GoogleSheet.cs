@@ -84,7 +84,13 @@ namespace SheetTools
       request.Execute();
     }
 
-    public IList<IList<Object>> CreateData(string[] arr)
+    public void ClearValues()
+    {
+      List<IList<Object>> objNewRecords = new List<IList<Object>>();
+      this.values.Values = objNewRecords;
+      this.values.Values.Add(new List<Object>());
+    }
+    public void CreateValues(string[] arr)
     {
       List<IList<Object>> objNewRecords = new List<IList<Object>>();
 
@@ -92,10 +98,11 @@ namespace SheetTools
       foreach (var item in arr)
       {
         obj.Add(item);
+        this.values.Values.Add(new List<object>(){item});
       }
       objNewRecords.Add(obj);
 
-      return objNewRecords;
+      this.values.Values = objNewRecords;
     }
 
     public void RawAppent(IList<IList<Object>> values, string newRange)

@@ -14,7 +14,7 @@ namespace SheetTools
       //Connecting to sheet
       var sheet1 = new GoogleSheet("1W126R96CXLJJ7x1R14rh70RtGOEEQnJv5J7E32Jx7wI");
       //Creating data and adding it to values
-      sheet1.values.Values = sheet1.CreateData(new string[] { "A1","B1","C1" });
+      sheet1.CreateValues(new string[] { "A1","B1","C1" });
       //Updating cells range in tab Balance with created data
       sheet1.UpdateCellsData("Balance", "A1:C1");
       //Reading data from Balance!B1:C1 cells
