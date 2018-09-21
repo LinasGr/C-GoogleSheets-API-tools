@@ -65,35 +65,26 @@ namespace SheetTools
       return service;
     }
 
-    public Object GetCellData(string tab, string col, string raw)
+    public void GetCellsData(string tab, string range)
     {
-      this.range = tab + "!" + col + raw;
+      this.range = tab + "!" + range;
+      this.values.Range = this.range;
       SpreadsheetsResource.ValuesResource.GetRequest request = this.service.Spreadsheets.Values.Get(this.sheetID, this.range);
       request.ValueRenderOption = SpreadsheetsResource.ValuesResource.GetRequest.ValueRenderOptionEnum.FORMATTEDVALUE;
       this.values = request.Execute();
-      if (values.Values != null && values.Values.Count > 0)
-        return values.Values[0][0];
-      else return null;
     }
 
-    public void UpdateCellData(string tab, string col, string raw)
+    public void UpdateCellsData(string tab, string range)
     {
-      this.range = tab + "!" + col + raw;
-      this.values.Values = GenerateData();
+      this.range = tab + "!" + range;
+      this.values.Range = this.range;
       SpreadsheetsResource.ValuesResource.UpdateRequest request =
         service.Spreadsheets.Values.Update(this.values, this.sheetID, this.range);
       request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
       request.Execute();
     }
-    public void UpdateCellData()
-    {
-      this.values.Values = GenerateData();
-      SpreadsheetsResource.ValuesResource.UpdateRequest request =
-        service.Spreadsheets.Values.Update(this.values, this.sheetID, this.range);
-      request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-      request.Execute();
-    }
-    public IList<IList<Object>> GenerateData(string[] arr)
+
+    public IList<IList<Object>> CreateData(string[] arr)
     {
       List<IList<Object>> objNewRecords = new List<IList<Object>>();
 

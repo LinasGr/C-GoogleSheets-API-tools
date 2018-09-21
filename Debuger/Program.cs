@@ -11,11 +11,19 @@ namespace SheetTools
   {
     static void Main(string[] args)
     {
+      //Connecting to sheet
       var sheet1 = new GoogleSheet("1W126R96CXLJJ7x1R14rh70RtGOEEQnJv5J7E32Jx7wI");
-      var result = sheet1.GetCellData("Balance", "A", "1");
-      Console.WriteLine($"{sheet1.GetCellData("Balance", "B", "1")}+{sheet1.GetCellData("Balance","C","1")}={result}");
-      sheet1.RawUpdate(sheet1.GenerateData(new string[1]{"A1"}), "A1");
-      Console.WriteLine($"{sheet1.GetCellData("Balance", "B", "1")}+{sheet1.GetCellData("Balance", "C", "1")}={result}");
+      //Creating data and adding it to values
+      sheet1.values.Values = sheet1.CreateData(new string[] { "A1","B1","C1" });
+      //Updating cells range in tab Balance with created data
+      sheet1.UpdateCellsData("Balance", "A1:C1");
+      //Reading data from Balance!B1:C1 cells
+      sheet1.GetCellsData("Balance", "B1:C1");
+      Console.Write(sheet1.values.Range+" -");
+      foreach (var item in sheet1.values.Values[0])
+      {
+        Console.Write(" "+item);
+      }
       Console.ReadLine();
     }
   }
