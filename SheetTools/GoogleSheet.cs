@@ -12,33 +12,34 @@ namespace SheetTools
 {
   public class GoogleSheet
   {
+    //Scopes - permitions working with SpreadSheets
     string[] Scopes = { SheetsService.Scope.Spreadsheets };
+    //Name of aplications for statistics on google API
     string applicationName = "CSharp";
+    //spreadSheetID - key to specific sheet
     String sheetID;
+
     SheetsService service;
-    public String range;
+
+    //range is address of tab and cell or range of cells
+    //required when fetching from or pushing data to sheets
+    public string range;
+
+    //values keeps data got from sheet or ready to be pushed to sheets
     public ValueRange values;
 
+    //spreadSheetID - key to specific sheet
     public GoogleSheet(string spreadSheetID)
     {
       this.sheetID = spreadSheetID;
       this.service = AuthorizeGoogleApp();
-      this.range = "A1";
+      this.range = "A1";//On creation points to left top corner of Sheet
       this.values = new ValueRange();
       this.values.Values = new List<IList<object>>();
       this.values.Values.Add(new List<object>());
     }
 
-    public GoogleSheet()
-    {
-      this.sheetID = "";
-      this.service = AuthorizeGoogleApp();
-      this.range = "A1";
-      this.values = new ValueRange();
-      this.values.Values = new List<IList<object>>();
-      this.values.Values.Add(new List<object>());
-    }
-
+    //Method for constructor to conecct sheet
     private SheetsService AuthorizeGoogleApp()
     {
       UserCredential credential;
@@ -65,6 +66,7 @@ namespace SheetTools
       return service;
     }
 
+    //Reads data to values from  tab!range
     public void GetCellsData(string tab, string range)
     {
       this.range = tab + "!" + range;
@@ -74,6 +76,7 @@ namespace SheetTools
       this.values = request.Execute();
     }
 
+    //Updates sheet at tab!range with data from values
     public void UpdateCellsData(string tab, string range)
     {
       this.range = tab + "!" + range;
@@ -84,40 +87,39 @@ namespace SheetTools
       request.Execute();
     }
 
+    //resets values
     public void ClearValues()
     {
       List<IList<Object>> objNewRecords = new List<IList<Object>>();
       this.values.Values = objNewRecords;
       this.values.Values.Add(new List<Object>());
     }
-    public void CreateValues(string[] arr)
-    {
-      List<IList<Object>> objNewRecords = new List<IList<Object>>();
 
+    //Adds line of data to values
+    public void CreateValuesLine(string[] arr)
+    {
       IList<Object> obj = new List<Object>();
       foreach (var item in arr)
       {
         obj.Add(item);
-        this.values.Values.Add(new List<object>(){item});
       }
-      objNewRecords.Add(obj);
-
-      this.values.Values = objNewRecords;
+      if (this.values.Values.Count == 1)
+      {
+        if (this.values.Values[0].Count == 0) this.values.Values[0] = obj;
+        else this.values.Values.Add(obj);
+      }
+      else this.values.Values.Add(obj);
     }
 
-    public void RawAppent(IList<IList<Object>> values, string newRange)
+    //Appends values at the and of table 
+    public void AppentCellsAtEnd(string range)
     {
+      this.range = range;
+      this.values.Range = this.range;
       SpreadsheetsResource.ValuesResource.AppendRequest request =
-         this.service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, this.sheetID, newRange);
+         this.service.Spreadsheets.Values.Append(this.values, this.sheetID, this.range);
       request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.OVERWRITE;
       request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-      var response = request.Execute();
-    }
-    public void RawUpdate(IList<IList<object>> values, string newRange)
-    {
-      SpreadsheetsResource.ValuesResource.UpdateRequest request =
-        this.service.Spreadsheets.Values.Update(new ValueRange() { Values = values }, this.sheetID, newRange);
-      request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
       var response = request.Execute();
     }
   }
