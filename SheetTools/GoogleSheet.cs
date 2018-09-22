@@ -25,14 +25,19 @@ namespace SheetTools
     //required when fetching from or pushing data to sheets
     public string range;
 
+    //Tab is sheet name object is working with
+    public string tab;
+
     //values keeps data got from sheet or ready to be pushed to sheets
     public ValueRange values;
 
     //spreadSheetID - key to specific sheet
-    public GoogleSheet(string spreadSheetID)
+    //tab is name of sheet object works on
+    public GoogleSheet(string spreadSheetID,string tab)
     {
       this.sheetID = spreadSheetID;
       this.service = AuthorizeGoogleApp();
+      this.tab = tab;
       this.range = "A1";//On creation points to left top corner of Sheet
       this.values = new ValueRange();
       this.values.Values = new List<IList<object>>();
@@ -67,9 +72,9 @@ namespace SheetTools
     }
 
     //Reads data to values from  tab!range
-    public void GetCellsData(string tab, string range)
+    public void GetCellsData( string range)
     {
-      this.range = tab + "!" + range;
+      this.range = this.tab + "!" + range;
       this.values.Range = this.range;
       SpreadsheetsResource.ValuesResource.GetRequest request = this.service.Spreadsheets.Values.Get(this.sheetID, this.range);
       request.ValueRenderOption = SpreadsheetsResource.ValuesResource.GetRequest.ValueRenderOptionEnum.FORMATTEDVALUE;
@@ -77,9 +82,9 @@ namespace SheetTools
     }
 
     //Updates sheet at tab!range with data from values
-    public void UpdateCellsData(string tab, string range)
+    public void UpdateCellsData(string range)
     {
-      this.range = tab + "!" + range;
+      this.range = this.tab + "!" + range;
       this.values.Range = this.range;
       SpreadsheetsResource.ValuesResource.UpdateRequest request =
         service.Spreadsheets.Values.Update(this.values, this.sheetID, this.range);
@@ -114,7 +119,7 @@ namespace SheetTools
     //Appends values at the and of table 
     public void AppentCellsAtEnd(string range)
     {
-      this.range = range;
+      this.range = this.tab+"!"+range;
       this.values.Range = this.range;
       SpreadsheetsResource.ValuesResource.AppendRequest request =
          this.service.Spreadsheets.Values.Append(this.values, this.sheetID, this.range);
