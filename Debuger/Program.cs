@@ -22,7 +22,7 @@ namespace SheetTools
       sheet1.UpdateCellsData("A1:C1");
 
       //Reading data from Balance!B1:C1 cells
-      sheet1.GetCellsData( "B1:C1");
+      sheet1.ReadCellsData( "B1:C1");
       Console.Write(sheet1.values.Range + " -");
       foreach (var item in sheet1.values.Values[0])
       {
@@ -30,7 +30,7 @@ namespace SheetTools
       }
 
       //Reading Data from Balance!B1:C1 cells
-      sheet1.GetCellsData("A1:C1");
+      sheet1.ReadCellsData("A1:C1");
       //Console.ReadLine();
 
       //Adding second line of values as first one comes from Balance!B1:C1

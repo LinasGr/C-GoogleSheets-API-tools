@@ -44,7 +44,7 @@ namespace SheetTools
       this.values.Values.Add(new List<object>());
     }
 
-    //Method for constructor to conecct sheet
+    //Method for constructor to connect sheet
     private SheetsService AuthorizeGoogleApp()
     {
       UserCredential credential;
@@ -71,8 +71,8 @@ namespace SheetTools
       return service;
     }
 
-    //Reads data to values from  tab!range
-    public void GetCellsData( string range)
+    //Reads data to values from  range
+    public void ReadCellsData( string range)
     {
       this.range = this.tab + "!" + range;
       this.values.Range = this.range;
@@ -81,7 +81,7 @@ namespace SheetTools
       this.values = request.Execute();
     }
 
-    //Updates sheet at tab!range with data from values
+    //Updates sheet at range with data from values
     public void UpdateCellsData(string range)
     {
       this.range = this.tab + "!" + range;
