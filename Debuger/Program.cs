@@ -47,21 +47,9 @@ namespace SheetTools
       //Append data at end of table within range Balance!A1:C1
       sheet1.AppentCellsAtEnd("A1:C1");
       //Console.ReadLine();
-      List<List<Object>> csv=ReadCSV();
-      Console.ReadLine();
-    }
-    static public List<List<Object>> ReadCSV()
-    {
-      /*
-      var contents = File.ReadAllText("E:/1.csv").Split('\n');
-      var csv = (from line in contents
-                select line.Split(',').ToList<Object>()).ToList();
-       */
-      var csv = new List<List<Object>>();
-      csv.Add(new List<object>());
-      string[] lines = File.ReadAllLines("E:/1.csv");
-      csv[0].Add(lines[0].Split(','));
-      return csv;
+      sheet1.DeleteRange("A1:C1");
+      sheet1.CreateTab("Testas");
+      sheet1.CreateTab("Testas");
     }
   }
 }

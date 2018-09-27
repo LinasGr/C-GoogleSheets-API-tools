@@ -7,6 +7,8 @@ using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Data = Google.Apis.Sheets.v4.Data;
 
 namespace SheetTools
 {
@@ -33,10 +35,11 @@ namespace SheetTools
 
     //spreadSheetID - key to specific sheet
     //tab is name of sheet object works on
-    public GoogleSheet(string spreadSheetID,string tab)
+    public GoogleSheet(string spreadSheetID, string tab)
     {
       this.sheetID = spreadSheetID;
       this.service = AuthorizeGoogleApp();
+      CreateTab(tab);
       this.tab = tab;
       this.range = "A1";//On creation points to left top corner of Sheet
       this.values = new ValueRange();
@@ -72,7 +75,7 @@ namespace SheetTools
     }
 
     //Reads data to values from  range
-    public void ReadCellsData( string range)
+    public void ReadCellsData(string range)
     {
       this.range = this.tab + "!" + range;
       this.values.Range = this.range;
@@ -119,7 +122,7 @@ namespace SheetTools
     //Appends values at the and of table 
     public void AppentCellsAtEnd(string range)
     {
-      this.range = this.tab+"!"+range;
+      this.range = this.tab + "!" + range;
       this.values.Range = this.range;
       SpreadsheetsResource.ValuesResource.AppendRequest request =
          this.service.Spreadsheets.Values.Append(this.values, this.sheetID, this.range);
@@ -127,5 +130,39 @@ namespace SheetTools
       request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
       var response = request.Execute();
     }
+
+    //Delete data from range of cells
+    public void DeleteRange(string range)
+    {
+      this.range = this.tab + "!" + range;
+      ClearValuesRequest requestBody = new ClearValuesRequest();
+      this.service.Spreadsheets.Values.Clear(requestBody, this.sheetID, this.range);
+    }
+
+    //Create tab if it does not exist
+    public void CreateTab(string tab)
+    {
+      // Add new Sheet
+      string sheetName = string.Format(tab);
+      var addSheetRequest = new AddSheetRequest();
+      addSheetRequest.Properties = new SheetProperties();
+      addSheetRequest.Properties.Title = sheetName;
+      BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest();
+      batchUpdateSpreadsheetRequest.Requests = new List<Request>();
+      batchUpdateSpreadsheetRequest.Requests.Add(new Request
+      {
+        AddSheet = addSheetRequest
+      });
+
+      var batchUpdateRequest =
+          service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, this.sheetID);
+      try
+      {
+        batchUpdateRequest.Execute();
+      }
+      catch { }
+    }
+
   }
 }
+
