@@ -136,7 +136,7 @@ namespace SheetTools
     {
       this.range = this.tab + "!" + range;
       ClearValuesRequest requestBody = new ClearValuesRequest();
-      this.service.Spreadsheets.Values.Clear(requestBody, this.sheetID, this.range);
+      this.service.Spreadsheets.Values.Clear(requestBody, this.sheetID, this.range).Execute();
     }
 
     //Create tab if it does not exist

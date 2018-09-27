@@ -48,8 +48,13 @@ namespace SheetTools
       sheet1.AppentCellsAtEnd("A1:C1");
       //Console.ReadLine();
       sheet1.DeleteRange("A1:C1");
+      //create tab
       sheet1.CreateTab("Testas");
+      //if tab exist do nothing
       sheet1.CreateTab("Testas");
+
+      sheet1.tab = "Filter";
+      sheet1.DeleteRange("A1:H");
     }
   }
 }
